@@ -39,5 +39,5 @@ def authenticate():
         
         return f"You can close this page and go back to Discord!{token[0:20]}"
 
-    port = int(os.environ.get('PORT', 8000))
+    port = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=port)
