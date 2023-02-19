@@ -1,4 +1,3 @@
-from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 from pprint import pp
 from requests_oauthlib import OAuth2Session
@@ -40,4 +39,4 @@ def authenticate():
         
         return f"You can close this page and go back to Discord!{token[0:20]}"
 
-    app.run()
+    app.run(port=8000)
