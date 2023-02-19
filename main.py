@@ -1,15 +1,15 @@
-import hikari
-import lightbulb
-import os
-import dotenv
+import auth
+import bot
+from multiprocessing import Process, freeze_support
 
-dotenv.load_dotenv()
-BOT_TOKEN = os.environ["BOT_TOKEN"]
+if __name__ == '__main__':
+    auth_process = Process(target=auth.authenticate)
+    bot_process = Process(target=bot.startBot)
 
-bot = hikari.GatewayBot(token=BOT_TOKEN)
+    auth_process.start()
+    bot_process.start()
 
-@bot.listen()
-async def ping(event: hikari.GuildMessageCreateEvent):
-    print("message detected")
+    auth_process.join()
+    bot_process.join()
 
-bot.run()
+print("hi")
