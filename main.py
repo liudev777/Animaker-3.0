@@ -5,7 +5,7 @@ import hikari
 import lightbulb
 import os
 import dotenv
-# import auth
+import auth
 
 def startBot():
     dotenv.load_dotenv()
@@ -22,9 +22,9 @@ def startBot():
 
     bot.run()
 
-startBot()
-# if __name__ == '__main__':
-#     # auth.authenticate()
-#     bot.startBot()
+if __name__ == '__main__':
+    p = Process(target=auth.authenticate)
+    p.start()
+    # startBot()
 
 # print("hi")

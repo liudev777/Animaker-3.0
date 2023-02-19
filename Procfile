@@ -1,2 +1,2 @@
-web: python auth.py web
+web: python main.py web
 worker: python main.py bot
