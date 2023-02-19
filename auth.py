@@ -35,8 +35,9 @@ def authenticate():
         authorization_url, state = oauth.authorization_url(authUrl)
         tokenUrl = 'https://anilist.co/api/v2/oauth/token'
         token = oauth.fetch_token(tokenUrl, code=code, client_secret=CLIENT_SECRET)
-        with open('tokens.json', 'w') as f:
-            json.dump({'TOKEN': token['access_token']}, f)
+        print("token fetched!")
+        # with open('tokens.json', 'w') as f:
+        #     json.dump({'TOKEN': token['access_token']}, f)
         
         return f"You can close this page and go back to Discord!{token[0:20]}"
 
