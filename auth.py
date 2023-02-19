@@ -12,7 +12,8 @@ dotenv.load_dotenv()
 CLIENT_ID = os.environ["CLIENT_ID"]
 CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 
-redirect_uri = 'http://localhost:8000/callback'
+# 'http://localhost:8000/callback'
+redirect_uri = "https://animaker3.herokuapp.com/callback"
 authUrl = f'https://anilist.co/api/v2/oauth/authorize?client_id={CLIENT_ID}&redirect_uri={redirect_uri}&response_type=code'
 
 def getURL():
@@ -27,7 +28,7 @@ def authenticate():
 
 
     @app.route('/callback')
-    def callback():
+    def index():
         code = request.args.get('code') #anilist auth will auto append this after user auths and open up this
 
         oauth = OAuth2Session(CLIENT_ID, redirect_uri=redirect_uri)
@@ -37,6 +38,6 @@ def authenticate():
         with open('tokens.json', 'w') as f:
             json.dump({'TOKEN': token['access_token']}, f)
         
-        return "You can close this page and go back to Discord!"
+        return f"You can close this page and go back to Discord!{token[0:20]}"
 
-    app.run(port=8000)
+    app.run()
