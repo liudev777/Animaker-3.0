@@ -24,7 +24,7 @@ def startBot():
 
 if __name__ == '__main__':
     p = Process(target=auth.authenticate)
-    # p.start()
+    p.start()
     startBot()
 
 # print("hi")
