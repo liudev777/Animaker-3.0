@@ -1,12 +1,11 @@
-import auth
-import bot
+# import bot
 from multiprocessing import Process, freeze_support
 
 import hikari
 import lightbulb
 import os
 import dotenv
-import auth
+# import auth
 
 def startBot():
     dotenv.load_dotenv()
@@ -19,8 +18,7 @@ def startBot():
     @lightbulb.command('open', 'opens auth` url')
     @lightbulb.implements(lightbulb.SlashCommand)
     async def ping(ctx):
-        print(auth.getURL())
-        await ctx.respond (auth.getURL())
+        await ctx.respond ("ping")
 
     bot.run()
 
