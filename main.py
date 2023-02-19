@@ -18,7 +18,7 @@ def startBot():
     @lightbulb.command('open', 'opens auth` url')
     @lightbulb.implements(lightbulb.SlashCommand)
     async def ping(ctx):
-        await ctx.respond ("ping")
+        await ctx.respond (auth.getURL)
 
     bot.run()
 
