@@ -34,13 +34,12 @@ def authenticate():
         oauth = OAuth2Session(CLIENT_ID, redirect_uri=redirect_uri)
         authorization_url, state = oauth.authorization_url(authUrl)
         tokenUrl = 'https://anilist.co/api/v2/oauth/token'
-        print(f'WWWWWWWWWWWWWWWWWWWW\n\n\nTHIS IS THE CODE: {code}\nTHIS IS THE TOKENURL: {tokenUrl}\nTHIS IS CLIENT SECRET: {CLIENT_SECRET}\n\n\nWWWWWWWWWWWWWWWWWWWW')
         token = oauth.fetch_token(tokenUrl, code=code, client_secret=CLIENT_SECRET)
         print("token fetched!")
         # with open('tokens.json', 'w') as f:
         #     json.dump({'TOKEN': token['access_token']}, f)
         
-        return f"You can close this page and go back to Discord!{token[0:20]}"
+        return f"You can close this page and go back to Discord!"
 
     port = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=port)
