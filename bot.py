@@ -2,7 +2,7 @@ import hikari
 import lightbulb
 import os
 import dotenv
-# import auth
+import auth
 
 def startBot():
     dotenv.load_dotenv()
@@ -15,6 +15,7 @@ def startBot():
     @lightbulb.command('open', 'opens auth` url')
     @lightbulb.implements(lightbulb.SlashCommand)
     async def ping(ctx):
-        await ctx.respond ("it works")
+        print(auth.getURL())
+        await ctx.respond (auth.getURL())
 
     bot.run()
