@@ -11,8 +11,8 @@ dotenv.load_dotenv()
 CLIENT_ID = os.environ["CLIENT_ID"]
 CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 
-# 'http://localhost:8000/callback'
-redirect_uri = "https://animaker3.herokuapp.com/"
+redirect_uri = 'http://localhost:3000/'
+# redirect_uri = "https://animaker3.herokuapp.com/"
 authUrl = f'https://anilist.co/api/v2/oauth/authorize?client_id={CLIENT_ID}&redirect_uri={redirect_uri}&response_type=code'
 
 def getURL():
@@ -21,11 +21,12 @@ def getURL():
 
 
 
+
 def authenticate():
 
     app = Flask(__name__)
 
-
+    temp = None
     @app.route('/')
     def index():
         code = request.args.get('code') #anilist auth will auto append this after user auths and open up this

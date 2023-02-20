@@ -19,3 +19,4 @@ def startBot():
         await ctx.respond (auth.getURL())
 
     bot.run()
+
