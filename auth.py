@@ -12,7 +12,7 @@ CLIENT_ID = os.environ["CLIENT_ID"]
 CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 REDIRECT_URI = os.environ["REDIRECT_URI"]
 
-REDIRECT_URI= 'http://localhost:3000/'
+# REDIRECT_URI= 'http://localhost:3000/'
 authUrl = f'https://anilist.co/api/v2/oauth/authorize?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code'
 
 def getURL():
