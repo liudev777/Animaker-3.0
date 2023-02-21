@@ -54,6 +54,7 @@ def authenticate(queue):
             return "An internal error occured with encryption"
         
         try:
+            print(f"THIS IS WHERE I GOT THE ERROR:\n{discordId}\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n{encrypted_token}") #del
             insertData(discordId=discordId, anilistToken=encrypted_token)
             return f"You can close this page and go back to Discord!"
         except Exception as e:
