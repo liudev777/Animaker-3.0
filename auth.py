@@ -4,7 +4,6 @@ from requests_oauthlib import OAuth2Session
 from flask import Flask, request
 import os
 import dotenv
-import asyncio
 from encryp import encrypt
 from database import insertData
 

@@ -5,7 +5,6 @@ import dotenv
 import auth
 from auth import authenticate
 from queue import Queue
-import asyncio
 import threading
 
 queue = Queue()
