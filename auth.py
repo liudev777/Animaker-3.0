@@ -11,10 +11,10 @@ from database import insertData
 dotenv.load_dotenv()
 CLIENT_ID = os.environ["CLIENT_ID"]
 CLIENT_SECRET = os.environ["CLIENT_SECRET"]
+REDIRECT_URI = os.environ["REDIRECT_URI"]
 
-redirect_uri = 'http://localhost:3000/'
-# redirect_uri = "https://animaker3.herokuapp.com/"
-authUrl = f'https://anilist.co/api/v2/oauth/authorize?client_id={CLIENT_ID}&redirect_uri={redirect_uri}&response_type=code'
+# REDIRECT_URI= 'http://localhost:3000/'
+authUrl = f'https://anilist.co/api/v2/oauth/authorize?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code'
 
 def getURL():
     return authUrl
@@ -39,7 +39,7 @@ def authenticate(queue):
         if not (discordId):
             return "Please sign in through discord. Contact kewb#7881 for inquiry"
         
-        oauth = OAuth2Session(CLIENT_ID, redirect_uri=redirect_uri)
+        oauth = OAuth2Session(CLIENT_ID, redirect_uri=REDIRECT_URI)
         authorization_url, state = oauth.authorization_url(authUrl)
         tokenUrl = 'https://anilist.co/api/v2/oauth/token'
         try:
