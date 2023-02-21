@@ -12,7 +12,7 @@ CLIENT_ID = os.environ["CLIENT_ID"]
 CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 REDIRECT_URI = os.environ["REDIRECT_URI"]
 
-# REDIRECT_URI= 'http://localhost:3000/'
+REDIRECT_URI= 'http://localhost:3000/'
 authUrl = f'https://anilist.co/api/v2/oauth/authorize?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&response_type=code'
 
 def getURL():
@@ -51,14 +51,14 @@ def authenticate(queue):
             encrypted_token = encrypt(str(token))
         except Exception as e:
             print(e)
-            return "An internal error occured"
+            return "An internal error occured with encryption"
         
         try:
             insertData(discordId=discordId, anilistToken=encrypted_token)
             return f"You can close this page and go back to Discord!"
         except Exception as e:
             print (e)
-            return "An internal error occured"
+            return "An internal error occured with database"
         
 
     port = int(os.environ.get('PORT', 3000))
