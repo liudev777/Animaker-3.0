@@ -1,4 +1,6 @@
+from pprint import pp
 from supabase import create_client, Client
+from encryp import decrypt
 import inspect
 import os
 import dotenv
@@ -12,13 +14,14 @@ SUPABASE_KEY: str = os.environ['SUPABASE_KEY']
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
-def viewData():
-    data = supabase.table("tokens").select("*").execute()
-    print(data.data)
-    if len(data.data) <= 0:
+def viewData(discordId):
+    data = supabase.table("tokens").select("*").eq("discordId", discordId).execute().data
+    if len(data) > 0:
+        data = decrypt(data[0]['anilistToken'])
+    # pp(data)
+    else:
         print("No Data Found :(", inspect.stack()[1].function)
-        return
-    print(data)
+    return data
 
 
 

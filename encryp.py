@@ -10,5 +10,5 @@ def encrypt(token):
     return token
 
 def decrypt(encrypted_token):
-    return K.decrypt(encrypted_token)
+    return K.decrypt(encrypted_token.encode()).decode()
 
