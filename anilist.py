@@ -105,6 +105,8 @@ def getCurrShowtimes(discordId):
             output += (f'{title}:\n{formatedNode}\n')
         print(output)
         
+        if not output:
+            return "No Shows In Watch List"
         return (output)
     
     return "Something went wrong"
