@@ -74,6 +74,8 @@ def getCurrAnimeList(discordId):
     titles = [entrie['media']['title']['userPreferred'] for entrie in entries]
     titles = "\n".join(titles)
     shows = f'Viewer: {name}\n\nCurrently Watching:\n{titles}'
+    if not shows:
+        return hikari.Embed(title="No Shows In Watchlist")
     return hikari.Embed(title=shows)
 
 # returns discord output of current anime watchlist airtimes
@@ -106,7 +108,7 @@ def getCurrShowtimes(discordId):
         print(output)
         
         if not output:
-            return "No Shows In Watch List"
+            return "No Shows Airing in Watchlist"
         return (output)
     
     return "Something went wrong"
