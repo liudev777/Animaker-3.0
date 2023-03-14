@@ -25,12 +25,12 @@ def viewData(discordId):
 
 
 # insert 
-# def insertData(discordId, anilistToken):
-#     table = supabase.table("tokens")
-#     row = table.select("*").eq("discordId", discordId).execute().data
-#     if (row):
-#         table.update({"discordId": discordId, "anilistToken": anilistToken}).eq("discordId", discordId).execute()
-#     else:
-#         table.insert({"discordId": discordId, "anilistToken": anilistToken}).execute()
-    # print(data) #del
+def insertData(discordId, anilistToken):
+    table = supabase.table("tokens")
+    row = table.select("*").eq("discordId", discordId).execute().data
+    if (row):
+        table.update({"discordId": discordId, "anilistToken": anilistToken}).eq("discordId", discordId).execute()
+    else:
+        table.insert({"discordId": discordId, "anilistToken": anilistToken}).execute()
+    print(data) #del
 

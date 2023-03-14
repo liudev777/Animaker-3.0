@@ -1,7 +1,9 @@
+import asyncio
 import hikari
 import lightbulb
 import os
 import dotenv
+from reminder import p
 from anilist import testQuery, getCurrAnimeList, getCurrShowtimes
 from encryp import encrypt
 
@@ -15,6 +17,7 @@ CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 REDIRECT_URI = os.environ["REDIRECT_URI"]
 
 # REDIRECT_URI= f'http://localhost:3000/'
+
 
 # Lets users connect their anilist account to discord
 @bot.command
@@ -43,8 +46,18 @@ async def info(ctx):
 @lightbulb.implements(lightbulb.SlashCommand)
 async def list(ctx):
     discordId = (ctx.author.id)
-    r = getCurrAnimeList(discordId)
-    await ctx.respond(r)
+    data = getCurrAnimeList(discordId)
+    if data == -1:
+        await ctx.respond("There was an Error")
+        return
+    name = data['User']['name']
+    entries = data['MediaListCollection']['lists'][0]['entries']
+    titles = [entrie['media']['title']['userPreferred'] for entrie in entries]
+    titles = "\n".join(titles)
+    shows = f'Viewer: {name}\n\nCurrently Watching:\n{titles}'
+    if not shows:
+        shows = "No Shows In Watchlist"
+    await ctx.respond(hikari.Embed(title=shows))
 
 # Gets current watchlist anime airtimes
 @bot.command
@@ -52,8 +65,33 @@ async def list(ctx):
 @lightbulb.implements(lightbulb.SlashCommand)
 async def showtime(ctx):
     discordId = (ctx.author.id)
-    r = getCurrShowtimes(discordId)
-    await ctx.respond(r)
+    data = getCurrShowtimes(discordId)
+    if data == -1:
+        await ctx.respond("No Shows Airing in Watchlist")
+        return
+    medias = data['Page']['media']
+    showInfosList = [(showInfos['title']['userPreferred'], showInfos['airingSchedule']['nodes']) for showInfos in medias if showInfos['airingSchedule']['nodes']]
+
+    print(showInfosList)
+    output = ""
+    for showInfos in showInfosList:
+        title = showInfos[0]
+        formatedNode = ''
+        for node in showInfos[1]:
+            formatedNode += "\t" + repr(node) + '\n'
+        output += (f'{title}:\n{formatedNode}\n')
+    print(output)
+    
+    if not output:
+        output = "No Shows Airing in Watchlist"
+    await ctx.respond(output)
+
+@bot.command
+@lightbulb.command('ping', 'test')
+@lightbulb.implements(lightbulb.SlashCommand)
+async def ping(ctx):
+    asyncio.create_task(p())
+    await ctx.respond("called")
 
 
 

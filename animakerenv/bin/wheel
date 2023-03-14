@@ -1,5 +1,5 @@
 #!/bin/sh
-'''exec' "/Users/devin/Documents/code/animaker 3.0/animakerenv/bin/python3" "$0" "$@"
+'''exec' "/Users/devin/Code/animaker 3.0/animakerenv/bin/python" "$0" "$@"
 ' '''
 # -*- coding: utf-8 -*-
 import re

@@ -7,6 +7,12 @@ from query import query1, query2, query3, query4
 
 url = 'https://graphql.anilist.co'
 
+
+
+def updateDB():
+    allUserSchedule = [] # stores the returned returned user and episode schedule id pair
+    pass
+
 # Query that requires user token
 def __getAuthQuery(discordId, variables, query):
     access_token = viewData(discordId)
@@ -68,15 +74,8 @@ def getCurrAnimeList(discordId):
     data = __getCurrShows(discordId)
     # pp(data) #del
     if not data:
-        return "No Current Shows"
-    name = data['User']['name']
-    entries = data['MediaListCollection']['lists'][0]['entries']
-    titles = [entrie['media']['title']['userPreferred'] for entrie in entries]
-    titles = "\n".join(titles)
-    shows = f'Viewer: {name}\n\nCurrently Watching:\n{titles}'
-    if not shows:
-        return hikari.Embed(title="No Shows In Watchlist")
-    return hikari.Embed(title=shows)
+        return -1
+    return data
 
 # returns discord output of current anime watchlist airtimes
 def getCurrShowtimes(discordId):
@@ -94,24 +93,9 @@ def getCurrShowtimes(discordId):
     response = __getQuery(variables, query4)
     if response.status_code == 200:
         data = json.loads(response.text)['data']
-        medias = data['Page']['media']
-        showInfosList = [(showInfos['title']['userPreferred'], showInfos['airingSchedule']['nodes']) for showInfos in medias if showInfos['airingSchedule']['nodes']]
-
-        print(showInfosList)
-        output = ""
-        for showInfos in showInfosList:
-            title = showInfos[0]
-            formatedNode = ''
-            for node in showInfos[1]:
-                formatedNode += "\t" + repr(node) + '\n'
-            output += (f'{title}:\n{formatedNode}\n')
-        print(output)
+        return data
         
-        if not output:
-            return "No Shows Airing in Watchlist"
-        return (output)
-    
-    return "Something went wrong"
+    return -1
     
 
 # gets some information about current watchlist
