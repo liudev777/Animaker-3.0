@@ -6,6 +6,7 @@ import dotenv
 from reminder import p
 from anilist import testQuery, getCurrAnimeList, getCurrShowtimes
 from encryp import encrypt
+from database import getAllShowtime
 
 dotenv.load_dotenv()
 BOT_TOKEN = os.environ["BOT_TOKEN"]
@@ -90,7 +91,8 @@ async def showtime(ctx):
 @lightbulb.command('ping', 'test')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def ping(ctx):
-    asyncio.create_task(p())
+    # asyncio.create_task(p())
+    getAllShowtime()
     await ctx.respond("called")
 
 

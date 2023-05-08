@@ -32,5 +32,13 @@ def insertData(discordId, anilistToken):
         table.update({"discordId": discordId, "anilistToken": anilistToken}).eq("discordId", discordId).execute()
     else:
         table.insert({"discordId": discordId, "anilistToken": anilistToken}).execute()
-    print(data) #del
 
+def getAllShowtime() -> list:
+    table = supabase.table("animeshowtime")
+    data = table.select("*").execute().data
+    if (data):
+        pp(data) #del
+        return data
+    else:
+        print("No data found :(")
+    pass

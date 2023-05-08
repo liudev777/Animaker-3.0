@@ -1,5 +1,5 @@
 from pprint import pp
-from database import viewData
+from database import viewData, getAllShowtime
 import requests
 import json
 import hikari
@@ -10,7 +10,9 @@ url = 'https://graphql.anilist.co'
 
 
 def updateDB():
-    allUserSchedule = [] # stores the returned returned user and episode schedule id pair
+    allUserSchedule = getAllShowtime() # stores the returned returned user and episode schedule id pair
+    
+    
     pass
 
 # Query that requires user token
