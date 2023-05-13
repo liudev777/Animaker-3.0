@@ -4,9 +4,10 @@ import lightbulb
 import os
 import dotenv
 from reminder import p
-from anilist import testQuery, getCurrAnimeList, getCurrShowtimes
+from anilist import testQuery, getCurrAnimeList, getCurrShowtimes, renewUserShowDB
 from encryp import encrypt
-from database import getAllShowtime
+from database import viewData
+import asyncio
 
 dotenv.load_dotenv()
 BOT_TOKEN = os.environ["BOT_TOKEN"]
@@ -27,6 +28,8 @@ REDIRECT_URI = os.environ["REDIRECT_URI"]
 async def login(ctx):
     discordId = (ctx.author.id)
     discordId = encrypt(str(discordId))
+    discordName = ctx.member.user
+    print (discordName)
     authUrl = f'https://anilist.co/api/v2/oauth/authorize?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&state={discordId}&response_type=code'
     await ctx.respond(hikari.Embed(title= "Link Discord with Anilist", url=authUrl))
 
@@ -91,9 +94,12 @@ async def showtime(ctx):
 @lightbulb.command('ping', 'test')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def ping(ctx):
-    # asyncio.create_task(p())
-    getAllShowtime()
-    await ctx.respond("called")
+    while True:
+        for x in range(10):
+            await ctx.respond(f"Hello, {ctx.member.user}!")
+            await asyncio.sleep(x)
+    # renewUserShowDB()
+
 
 
 

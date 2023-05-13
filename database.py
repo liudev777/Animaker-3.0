@@ -25,20 +25,61 @@ def viewData(discordId):
 
 
 # insert 
-def insertData(discordId, anilistToken):
-    table = supabase.table("tokens")
-    row = table.select("*").eq("discordId", discordId).execute().data
-    if (row):
-        table.update({"discordId": discordId, "anilistToken": anilistToken}).eq("discordId", discordId).execute()
-    else:
-        table.insert({"discordId": discordId, "anilistToken": anilistToken}).execute()
+def updateToken(discordId, anilistToken):
+    try:
+        table = supabase.table("tokens")
+        row = table.select("*").eq("discordId", discordId).execute().data
+        if (row):
+            table.update({"discordId": discordId, "anilistToken": anilistToken}).eq("discordId", discordId).execute()
+        else:
+            table.insert({"discordId": discordId, "anilistToken": anilistToken}).execute()
+    except Exception as e: 
+        print ("updateToken: ", e)
 
-def getAllShowtime() -> list:
-    table = supabase.table("animeshowtime")
-    data = table.select("*").execute().data
+
+
+def updateUserShows(discordId, showId):
+    try:
+        table = supabase.table("userShows")
+        table.insert({"discordId": discordId, "showId": showId}).execute().data
+        print("done") #del
+        return 1
+    except Exception as e:
+        print ("updateUserShows: ", e)
+
+def clearUserShows():
+    try:
+        table = supabase.table("userShows")
+        table.delete().neq("discordId", 0).execute()
+        print("deleted userShows db") #del
+    except Exception as e:
+        print ("clearUserShow: ", e)
+        
+def updateShows(showId, showName, status, showTimeId):
+    try:
+        table = supabase.table("shows")
+        row = table.select("showId").eq("showId", showId).execute().data
+        if (row):
+            table.update({"showId": showId, "showName": showName, "status": status, "showTimeId": showTimeId}).eq("showId", showId)
+        else:
+            table.insert({"showId": showId, "showName": showName, "status": status, "showTimeId": showTimeId}).execute()
+    except Exception as e:
+        print("updateShows: ", e)
+
+def clearShows():
+    try:
+        table = supabase.table("shows")
+        table.delete().neq("showId", 0).execute()
+        print("deleted Shows db") #del
+    except Exception as e:
+        print ("clearUserShow: ", e)
+    
+
+def getAllUsers():
+    data = supabase.table("tokens").select("discordId").execute().data
     if (data):
         pp(data) #del
         return data
     else:
-        print("No data found :(")
+        print("getAllShowtime: No data found :(")
     pass

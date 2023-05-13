@@ -1,5 +1,5 @@
 from pprint import pp
-from database import viewData, getAllShowtime
+from database import viewData, getAllUsers, updateUserShows, updateShows, clearUserShows, clearShows
 import requests
 import json
 import hikari
@@ -8,12 +8,40 @@ from query import query1, query2, query3, query4
 url = 'https://graphql.anilist.co'
 
 
+# updates the database for all user and the shows they are watching
+def renewUserShowDB(): 
+    allUsers = getAllUsers()
+    # print(allUsers) #del
+    clearUserShows() #delete the userShows entries 
+    clearShows() # delete the shows entries
+    for user in allUsers:
+        discordId = user["discordId"]
+        # print(discordId) # del
+        currShows = getCurrShowtimes(discordId)
+        pp("hi")
+        pp(currShows)
+        for media in currShows['Page']['media']: # repopulate userShows entries with updated shows
+            # print("entry: ", entry)
+            showId = media['id']
+            title = media['title']['userPreferred']
+            status = media['status']
+            nextAirTime = None
+            if not status == "FINISHED":
+                status = True
+                if media['airingSchedule']['nodes']:
+                    nextAirTime = media['airingSchedule']['nodes'][0]['airingAt']
+            else: 
+                status = False
+            print("FIELDS: \n", showId, title, status, nextAirTime)
+            updateShows(showId, title, status, nextAirTime)
+            # print(showId)
+            updateUserShows(discordId, showId)
 
-def updateDB():
-    allUserSchedule = getAllShowtime() # stores the returned returned user and episode schedule id pair
+"""TODO: create a function that returns showid, name, status, and show airtime id"""
+        
+
     
     
-    pass
 
 # Query that requires user token
 def __getAuthQuery(discordId, variables, query):

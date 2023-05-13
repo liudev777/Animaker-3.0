@@ -54,6 +54,7 @@ query4 = '''
 query ($mediaIds: [Int]) {
     Page {
         media(id_in: $mediaIds) {
+            id
             title {
                 userPreferred
             }
