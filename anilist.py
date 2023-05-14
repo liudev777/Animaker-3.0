@@ -1,44 +1,11 @@
 from pprint import pp
-from database import viewData, getAllUsers, updateUserShows, updateShows, clearAllUserShows, clearAllShows, clearUserShows
+from database import viewData
 import requests
 import json
 import hikari
 from query import query1, query2, query3, query4
 
 url = 'https://graphql.anilist.co'
-
-
-# updates the database for all user and the shows they are watching
-def renewAllUserShowDB(): 
-    allUsers = getAllUsers()
-    # print(allUsers) #del
-    # clearAllUserShows() #delete the userShows entries 
-    # clearAllShows() # delete the shows entries
-    for user in allUsers:
-        renewUserShowDB(user['discordId'])
-
-def renewUserShowDB(discordId):
-    clearUserShows(discordId)
-    currShows = getCurrShowtimes(discordId)
-    # pp(currShows)
-    for media in currShows['Page']['media']: # repopulate userShows entries with updated shows
-        showId = media['id']
-        title = media['title']['userPreferred']
-        status = media['status']
-        timeUntilAiring = None
-        if not status == "FINISHED":
-            status = True
-            if media['airingSchedule']['nodes']:
-                timeUntilAiring = media['airingSchedule']['nodes'][0]['timeUntilAiring']
-        else: 
-            status = False
-        # print("FIELDS: \n", showId, title, status, timeUntilAiring)
-        updateShows(showId, title, status, timeUntilAiring)
-        # print(showId)
-        updateUserShows(discordId, showId)
-
-def getUserShowtime():
-    renewAllUserShowDB()
 
 # Query that requires user token
 def __getAuthQuery(discordId, variables, query):

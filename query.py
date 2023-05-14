@@ -59,6 +59,9 @@ query ($mediaIds: [Int]) {
                 userPreferred
             }
             status
+            coverImage {
+                medium
+            }
             airingSchedule(perPage: 5, notYetAired: true) {
                 nodes {
                     episode

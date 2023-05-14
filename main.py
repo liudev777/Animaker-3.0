@@ -6,6 +6,7 @@ import dotenv
 from scheduler import p, schedule_show, enableAnimeAlert, disableAnimeAlert
 from anilist import testQuery, getCurrAnimeList, getCurrShowtimes
 from encryp import encrypt
+from hikari import Embed
 # from database import getAllShowtime
 
 dotenv.load_dotenv()
@@ -58,37 +59,16 @@ async def list(ctx):
     entries = data['MediaListCollection']['lists'][0]['entries']
     titles = [entrie['media']['title']['userPreferred'] for entrie in entries]
     titles = "\n".join(titles)
-    shows = f'Viewer: {name}\n\nCurrently Watching:\n{titles}'
-    if not shows:
-        shows = "No Shows In Watchlist"
-    await ctx.respond(hikari.Embed(title=shows))
 
-# Gets current watchlist anime airtimes
-@bot.command
-@lightbulb.command('showtime', 'get currently watching anime showtime info')
-@lightbulb.implements(lightbulb.SlashCommand)
-async def showtime(ctx):
-    discordId = (ctx.author.id)
-    data = getCurrShowtimes(discordId)
-    if data == -1:
-        await ctx.respond("No Shows Airing in Watchlist")
-        return
-    medias = data['Page']['media']
-    showInfosList = [(showInfos['title']['userPreferred'], showInfos['airingSchedule']['nodes']) for showInfos in medias if showInfos['airingSchedule']['nodes']]
+    if not titles:
+        titles = "No Shows In Watchlist"
+    embed = Embed(
+        title=f"{name}'s Shows:",
+        description=titles,
+        color=hikari.colors.Color.of((137, 207, 240))
+    )
+    await ctx.respond(embed=embed)
 
-    print(showInfosList)
-    output = ""
-    for showInfos in showInfosList:
-        title = showInfos[0]
-        formatedNode = ''
-        for node in showInfos[1]:
-            formatedNode += "\t" + repr(node) + '\n'
-        output += (f'{title}:\n{formatedNode}\n')
-    print(output)
-    
-    if not output:
-        output = "No Shows Airing in Watchlist"
-    await ctx.respond(output)
 
 @bot.command
 @lightbulb.command('ping', 'test', ephemeral=[True])
@@ -109,8 +89,11 @@ async def ping(ctx):
 async def alert(ctx):
     discordId = ctx.author.id
     channelId = ctx.channel_id
-    await ctx.respond("Your alerts are now enabled!")
-    await enableAnimeAlert(bot, discordId, channelId, schedulers, renewSchedulers)
+    if discordId in renewSchedulers:
+        await ctx.respond("Your alerts are already enabled")
+    else:
+        await ctx.respond("Your alerts are now enabled!")
+        await enableAnimeAlert(bot, discordId, channelId, schedulers, renewSchedulers)
 
 @bot.command
 @lightbulb.command('stop', 'Disable Anime reminders')
