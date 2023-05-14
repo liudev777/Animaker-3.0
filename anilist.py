@@ -1,5 +1,5 @@
 from pprint import pp
-from database import viewData, getAllUsers, updateUserShows, updateShows, clearUserShows, clearShows
+from database import viewData, getAllUsers, updateUserShows, updateShows, clearAllUserShows, clearAllShows, clearUserShows
 import requests
 import json
 import hikari
@@ -9,39 +9,39 @@ url = 'https://graphql.anilist.co'
 
 
 # updates the database for all user and the shows they are watching
-def renewUserShowDB(): 
+def renewAllUserShowDB(): 
     allUsers = getAllUsers()
     # print(allUsers) #del
-    clearUserShows() #delete the userShows entries 
-    clearShows() # delete the shows entries
+    # clearAllUserShows() #delete the userShows entries 
+    # clearAllShows() # delete the shows entries
     for user in allUsers:
-        discordId = user["discordId"]
-        # print(discordId) # del
-        currShows = getCurrShowtimes(discordId)
-        pp("hi")
-        pp(currShows)
-        for media in currShows['Page']['media']: # repopulate userShows entries with updated shows
-            # print("entry: ", entry)
-            showId = media['id']
-            title = media['title']['userPreferred']
-            status = media['status']
-            nextAirTime = None
-            if not status == "FINISHED":
-                status = True
-                if media['airingSchedule']['nodes']:
-                    nextAirTime = media['airingSchedule']['nodes'][0]['airingAt']
-            else: 
-                status = False
-            print("FIELDS: \n", showId, title, status, nextAirTime)
-            updateShows(showId, title, status, nextAirTime)
-            # print(showId)
-            updateUserShows(discordId, showId)
+        renewUserShowDB(user['discordId'])
 
-"""TODO: create a function that returns showid, name, status, and show airtime id"""
-        
+def renewUserShowDB(discordId):
+    clearUserShows(discordId)
+    currShows = getCurrShowtimes(discordId)
+    # pp(currShows)
+    for media in currShows['Page']['media']: # repopulate userShows entries with updated shows
+        # pp(media)
+        # pp("\n")
+        showId = media['id']
+        title = media['title']['userPreferred']
+        status = media['status']
+        timeUntilAiring = None
+        if not status == "FINISHED":
+            status = True
+            if media['airingSchedule']['nodes']:
+                timeUntilAiring = media['airingSchedule']['nodes'][0]['timeUntilAiring']
+                print("TIME UNTIL AIRING: ", timeUntilAiring) #del
+        else: 
+            status = False
+        print("FIELDS: \n", showId, title, status, timeUntilAiring)
+        updateShows(showId, title, status, timeUntilAiring)
+        # print(showId)
+        updateUserShows(discordId, showId)
 
-    
-    
+def getUserShowtime():
+    renewAllUserShowDB()
 
 # Query that requires user token
 def __getAuthQuery(discordId, variables, query):

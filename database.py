@@ -47,32 +47,44 @@ def updateUserShows(discordId, showId):
     except Exception as e:
         print ("updateUserShows: ", e)
 
-def clearUserShows():
+def clearAllUserShows():
     try:
         table = supabase.table("userShows")
         table.delete().neq("discordId", 0).execute()
+        print("deleted ALL userShows db") #del
+    except Exception as e:
+        print ("clearAllUserShow: ", e)
+
+def clearUserShows(discordId):
+    try:
+        table = supabase.table("userShows")
+        table.delete().eq("discordId", discordId).execute()
         print("deleted userShows db") #del
     except Exception as e:
-        print ("clearUserShow: ", e)
+        print ("clearUserShow: ", e)    
         
-def updateShows(showId, showName, status, showTimeId):
+def updateShows(showId, showName, status, timeUntilAir):
     try:
         table = supabase.table("shows")
         row = table.select("showId").eq("showId", showId).execute().data
+        pp("\n")
+        pp(row)
         if (row):
-            table.update({"showId": showId, "showName": showName, "status": status, "showTimeId": showTimeId}).eq("showId", showId)
+            table.update({"showId": showId, "showName": showName, "status": status, "timeUntilAir": timeUntilAir}).eq("showId", showId).execute()
+            print("show updated!: ", showId, showName, status, timeUntilAir)
         else:
-            table.insert({"showId": showId, "showName": showName, "status": status, "showTimeId": showTimeId}).execute()
+            table.insert({"showId": showId, "showName": showName, "status": status, "timeUntilAir": timeUntilAir}).execute()
+            print("show not in db, adding it now: ", showName)
     except Exception as e:
         print("updateShows: ", e)
 
-def clearShows():
+def clearAllShows():
     try:
         table = supabase.table("shows")
         table.delete().neq("showId", 0).execute()
-        print("deleted Shows db") #del
+        print("deleted ALL Shows db") #del
     except Exception as e:
-        print ("clearUserShow: ", e)
+        print ("clearAllUserShow: ", e)
     
 
 def getAllUsers():
@@ -83,3 +95,12 @@ def getAllUsers():
     else:
         print("getAllShowtime: No data found :(")
     pass
+
+def getAiringShows(discordId):
+    try:
+        data = supabase.table("userShows").select("*, shows(status, timeUntilAir, showName)").eq("discordId", discordId).execute().data
+        return data
+    except Exception as e:
+        print("getAiringShows: ", e)
+
+    return None
