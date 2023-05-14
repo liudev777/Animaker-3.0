@@ -22,8 +22,6 @@ def renewUserShowDB(discordId):
     currShows = getCurrShowtimes(discordId)
     # pp(currShows)
     for media in currShows['Page']['media']: # repopulate userShows entries with updated shows
-        # pp(media)
-        # pp("\n")
         showId = media['id']
         title = media['title']['userPreferred']
         status = media['status']
@@ -32,10 +30,9 @@ def renewUserShowDB(discordId):
             status = True
             if media['airingSchedule']['nodes']:
                 timeUntilAiring = media['airingSchedule']['nodes'][0]['timeUntilAiring']
-                print("TIME UNTIL AIRING: ", timeUntilAiring) #del
         else: 
             status = False
-        print("FIELDS: \n", showId, title, status, timeUntilAiring)
+        # print("FIELDS: \n", showId, title, status, timeUntilAiring)
         updateShows(showId, title, status, timeUntilAiring)
         # print(showId)
         updateUserShows(discordId, showId)

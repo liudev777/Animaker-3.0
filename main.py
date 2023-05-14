@@ -3,7 +3,7 @@ import hikari
 import lightbulb
 import os
 import dotenv
-from scheduler import p, schedule_show, enableAnimeAlert
+from scheduler import p, schedule_show, enableAnimeAlert, disableAnimeAlert
 from anilist import testQuery, getCurrAnimeList, getCurrShowtimes
 from encryp import encrypt
 # from database import getAllShowtime
@@ -18,6 +18,9 @@ CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 REDIRECT_URI = os.environ["REDIRECT_URI"]
 
 # REDIRECT_URI= f'http://localhost:3000/'
+
+schedulers = {}
+renewSchedulers = {}
 
 
 # Lets users connect their anilist account to discord
@@ -105,8 +108,16 @@ async def ping(ctx):
 @lightbulb.implements(lightbulb.SlashCommand)
 async def alert(ctx):
     discordId = ctx.author.id
+    channelId = ctx.channel_id
     await ctx.respond("Your alerts are now enabled!")
-    await enableAnimeAlert(ctx, discordId)
+    await enableAnimeAlert(bot, discordId, channelId, schedulers, renewSchedulers)
+
+@bot.command
+@lightbulb.command('stop', 'Disable Anime reminders')
+@lightbulb.implements(lightbulb.SlashCommand)
+async def stop(ctx):
+    discordId = ctx.author.id
+    await disableAnimeAlert(ctx, discordId, schedulers, renewSchedulers)
 
 
 

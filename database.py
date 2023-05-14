@@ -42,7 +42,7 @@ def updateUserShows(discordId, showId):
     try:
         table = supabase.table("userShows")
         table.insert({"discordId": discordId, "showId": showId}).execute().data
-        print("done") #del
+        # print("done") #del
         return 1
     except Exception as e:
         print ("updateUserShows: ", e)
@@ -67,14 +67,14 @@ def updateShows(showId, showName, status, timeUntilAir):
     try:
         table = supabase.table("shows")
         row = table.select("showId").eq("showId", showId).execute().data
-        pp("\n")
-        pp(row)
+        # pp("\n")
+        # pp(row)
         if (row):
             table.update({"showId": showId, "showName": showName, "status": status, "timeUntilAir": timeUntilAir}).eq("showId", showId).execute()
-            print("show updated!: ", showId, showName, status, timeUntilAir)
+            # print("show updated!: ", showId, showName, status, timeUntilAir)
         else:
             table.insert({"showId": showId, "showName": showName, "status": status, "timeUntilAir": timeUntilAir}).execute()
-            print("show not in db, adding it now: ", showName)
+            # print("show not in db, adding it now: ", showName)
     except Exception as e:
         print("updateShows: ", e)
 
