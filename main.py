@@ -4,7 +4,7 @@ import lightbulb
 import os
 import dotenv
 from scheduler import p, schedule_show, enableAnimeAlert, disableAnimeAlert
-from anilist import testQuery, getCurrAnimeList, getCurrShowtimes
+from anilist import testQuery, getCurrAnimeList, getCurrShowtimes, checkIsLoggedIn
 from encryp import encrypt
 from hikari import Embed
 # from database import getAllShowtime
@@ -51,9 +51,13 @@ async def info(ctx):
 @lightbulb.implements(lightbulb.SlashCommand)
 async def list(ctx):
     discordId = (ctx.author.id)
+    if not checkIsLoggedIn(discordId):
+        await ctx.respond("Please Login first using /login")
+        return
+
     data = getCurrAnimeList(discordId)
-    if data == -1:
-        await ctx.respond("There was an Error")
+    if not data:
+        await ctx.respond("Please Log in")
         return
     name = data['User']['name']
     entries = data['MediaListCollection']['lists'][0]['entries']
@@ -69,7 +73,7 @@ async def list(ctx):
     )
     await ctx.respond(embed=embed)
 
-
+# test command
 @bot.command
 @lightbulb.command('ping', 'test', ephemeral=[True])
 @lightbulb.implements(lightbulb.SlashCommand)
@@ -83,11 +87,16 @@ async def ping(ctx):
         tasks.append(task)
     await asyncio.gather(*tasks)
 
+# enables anime reminders for airing shows
 @bot.command
 @lightbulb.command('alert', 'Enable Anime reminders')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def alert(ctx):
     discordId = ctx.author.id
+    if not checkIsLoggedIn(discordId):
+        await ctx.respond("Please Login first using /login")
+        return
+
     channelId = ctx.channel_id
     if discordId in renewSchedulers:
         await ctx.respond("Your alerts are already enabled")
@@ -95,15 +104,28 @@ async def alert(ctx):
         await ctx.respond("Your alerts are now enabled!")
         await enableAnimeAlert(bot, discordId, channelId, schedulers, renewSchedulers)
 
+# disables any ping notification
 @bot.command
 @lightbulb.command('stop', 'Disable Anime reminders')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def stop(ctx):
     discordId = ctx.author.id
+    if not checkIsLoggedIn(ctx, discordId):
+        await ctx.respond("Please Login first using /login")
+        return
+        
     await disableAnimeAlert(ctx, discordId, schedulers, renewSchedulers)
 
-
-
+@bot.command
+@lightbulb.command('helpu', 'Displays helpful')
+@lightbulb.implements(lightbulb.SlashCommand)
+async def stop(ctx):
+    discordId = ctx.author.id
+    if not checkIsLoggedIn(ctx, discordId):
+        await ctx.respond("Please Login first using /login")
+        return
+        
+    await disableAnimeAlert(ctx, discordId, schedulers, renewSchedulers)
 
 bot.run()
 

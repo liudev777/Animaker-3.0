@@ -11,7 +11,7 @@ url = 'https://graphql.anilist.co'
 def __getAuthQuery(discordId, variables, query):
     access_token = viewData(discordId)
     if not access_token:
-        return -1
+        return 0
 
     headers = {
     'Authorization': 'Bearer ' + access_token,
@@ -68,15 +68,15 @@ def getCurrAnimeList(discordId):
     data = __getCurrShows(discordId)
     # pp(data) #del
     if not data:
-        return -1
+        return 0
     return data
 
 # returns discord output of current anime watchlist airtimes
-def getCurrShowtimes(discordId):
+def getCurrShowtimes(discordId) -> int:
     data = __getCurrShows(discordId)
     # print("DATA: ", data)
     if not data:
-        return "No Current Shows"
+        return 0
     name = data['User']['name']
     entries = data['MediaListCollection']['lists'][0]['entries']
     showIds = [entrie['media']['id'] for entrie in entries]
@@ -89,16 +89,12 @@ def getCurrShowtimes(discordId):
         data = json.loads(response.text)['data']
         return data
         
-    return -1
+    return 0
     
 
 # gets some information about current watchlist
 def __getCurrShows(discordId):
     viewer_id = __getUserId(discordId)
-    if viewer_id == -1:
-        return "Please login using /login first!"
-    if not viewer_id:
-        return "User Not Found"
     print("viewer id: ", viewer_id)
     variables = {
         'userId': viewer_id
@@ -108,14 +104,14 @@ def __getCurrShows(discordId):
     if response.status_code == 200:
         data = json.loads(response.text)['data']
         return data
-    return "Something went wrong"
+    return 0
 
 # returns the user id of the current user
 def __getUserId(discordId):
     variables = {}
     response = __getAuthQuery(discordId, variables, query2)
 
-    if response == -1 or response == False:
+    if not response:
         return response
 
     if response.status_code == 200:
@@ -124,6 +120,11 @@ def __getUserId(discordId):
         viewer_id = data['Viewer']['id']
         # watch_list = data['']
         return viewer_id
-    return False
+    return 0
 
     pass
+
+def checkIsLoggedIn(discordId):
+    if not __getAuthQuery(discordId, {}, query2):
+        return False
+    return True
