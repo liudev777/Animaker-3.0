@@ -92,7 +92,7 @@ class AlertManager:
 
     async def setNextSchedule(self, showId, discordId, channelId):
         anime = getShowtime(showId)
-        media = ['Page']['media']
+        media = anime['Page']['media']
         status = media['status']
 
         # skip shows that have ended or doesn't have a schedule
