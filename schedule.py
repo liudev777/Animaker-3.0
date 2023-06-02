@@ -4,6 +4,7 @@ from anilist import getCurrShowtimes, getShowtime
 from response import alertEmbed
 from datetime import datetime
 
+# manager class to keep track of running jobs
 class AlertManager:
     def __init__(self, bot) -> None:
         self.bot = bot
@@ -12,8 +13,7 @@ class AlertManager:
         self.scheduler.add_job(self.refreshSchedule, 'interval', hours=12)
         self.scheduler.start()
 
-
-    # initializes alerts for users who chose to enable it
+    # initializes alerts for all users who chose to enable it
     async def initAlerts(self):
         enabled_datas = getEnabledAlertUsers()
         for data in enabled_datas:
@@ -21,6 +21,7 @@ class AlertManager:
             channelId = data['channelId']
             await self.activateAlerts(discordId, channelId)
 
+    # turns on the alert for each individual user
     async def activateAlerts(self, discordId, channelId):
         showDatas = getCurrShowtimes(discordId)
         for media in showDatas['Page']['media']:
@@ -50,6 +51,7 @@ class AlertManager:
             
         pass
 
+    # Sends a discord embed with episode information
     async def sendAlert(self, alert_info):
         print("Alerted!")
         await alertEmbed(
@@ -61,12 +63,13 @@ class AlertManager:
             alert_info['discordId']
         )
 
-        self.setNextSchedule(
+        await self.setNextSchedule(
             alert_info['showId'],
             alert_info['discordId'],
             alert_info['channelId']
         )
 
+    # disables alert for user and updates database
     async def stopAlert(self, discordId, ctx):
         user_data = getAlertUser(discordId)
         # print(user_data)
@@ -74,11 +77,12 @@ class AlertManager:
             await ctx.respond("You don't have any alerts enabled")
             return
         
-        print(self.jobs)
+        # removes user from running jobs and db
         del self.jobs[discordId]
         removeAlertUser(discordId)
         await ctx.respond("Your alerts are now disabled!")
 
+    # enables alert for user and updates database
     async def startAlert(self, discordId, channelId, ctx):
         user_data = getAlertUser(discordId)
         # print(user_data)
@@ -90,6 +94,7 @@ class AlertManager:
         addAlertUser(discordId, channelId)
         await self.activateAlerts(discordId, channelId)
 
+    # 
     async def setNextSchedule(self, showId, discordId, channelId):
         anime = getShowtime(showId)
         media = anime['Page']['media']

@@ -116,12 +116,8 @@ bot.run()
 
 """
 TODO:
-calendar
-calendar reminder
-view library
 add to library
 remove from library
-
 
 optional:
 give rating
