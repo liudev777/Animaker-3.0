@@ -3,10 +3,10 @@ import hikari
 import lightbulb
 import os
 import dotenv
-from scheduler import p, schedule_show, enableAnimeAlert, disableAnimeAlert
 from anilist import testQuery, getCurrAnimeList, getCurrShowtimes, checkIsLoggedIn
 from encryp import encrypt
 from hikari import Embed
+from schedule import AlertManager
 # from database import getAllShowtime
 
 dotenv.load_dotenv()
@@ -22,7 +22,14 @@ REDIRECT_URI = os.environ["REDIRECT_URI"]
 
 schedulers = {}
 renewSchedulers = {}
+jobs = {}
 
+alertManager = AlertManager(bot)
+
+@bot.listen(hikari.StartingEvent)
+async def on_started(event: hikari.StartingEvent) -> None:
+    print("Bot is now ready.")
+    await alertManager.initAlerts()
 
 # Lets users connect their anilist account to discord
 @bot.command
@@ -78,14 +85,8 @@ async def list(ctx):
 @lightbulb.command('ping', 'test', ephemeral=[True])
 @lightbulb.implements(lightbulb.SlashCommand)
 async def ping(ctx):
-    discordID = ctx.author.id
-    await ctx.respond("started!")
-    schedule = [(1, "one piece"), (2, "dragon ball"), (3, "fairy tail")]
-    tasks = []
-    for time, title in schedule:
-        task = asyncio.create_task(schedule_show(ctx, time, title, discordID))
-        tasks.append(task)
-    await asyncio.gather(*tasks)
+    print(schedulers, '\n', renewSchedulers)
+    await ctx.respond("ping")
 
 # enables anime reminders for airing shows
 @bot.command
@@ -98,34 +99,28 @@ async def alert(ctx):
         return
 
     channelId = ctx.channel_id
-    if discordId in renewSchedulers:
-        await ctx.respond("Your alerts are already enabled")
-    else:
-        await ctx.respond("Your alerts are now enabled!")
-        await enableAnimeAlert(bot, discordId, channelId, schedulers, renewSchedulers)
+    
+    await alertManager.startAlert(discordId, channelId, ctx)
 
 # disables any ping notification
 @bot.command
 @lightbulb.command('stop', 'Disable Anime reminders')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def stop(ctx):
+    print("clicked")
     discordId = ctx.author.id
-    if not checkIsLoggedIn(ctx, discordId):
+    if not checkIsLoggedIn(discordId):
         await ctx.respond("Please Login first using /login")
         return
-        
-    await disableAnimeAlert(ctx, discordId, schedulers, renewSchedulers)
+    
+    await alertManager.stopAlert(discordId, ctx)
+    
 
 @bot.command
 @lightbulb.command('helpu', 'Displays helpful')
 @lightbulb.implements(lightbulb.SlashCommand)
-async def stop(ctx):
-    discordId = ctx.author.id
-    if not checkIsLoggedIn(ctx, discordId):
-        await ctx.respond("Please Login first using /login")
-        return
-        
-    await disableAnimeAlert(ctx, discordId, schedulers, renewSchedulers)
+async def help(ctx):
+    pass
 
 bot.run()
 

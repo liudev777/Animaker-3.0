@@ -104,3 +104,45 @@ def getAiringShows(discordId):
         print("getAiringShows: ", e)
 
     return None
+
+def getEnabledAlertUsers():
+    try:
+        data = supabase.table("calender_on").select("*").eq("enabled", "TRUE").execute().data
+        return data
+    except Exception as e:
+        print("getAlertUsers: ", e)
+
+def getAlertUser(discordId):
+    try: 
+        data = supabase.table("calender_on").select("*").eq("discordId", discordId).execute().data
+        return data[0]
+    except Exception as e:
+        print("getAllAlertUsers: ", e)
+
+def addAlertUser(discordId, channelId):
+    print("added alert userrrewrwrwer")
+
+    try:
+        table = supabase.table("calender_on")
+        row = table.select("*").eq("discordId", discordId).execute().data
+        if (row):
+            table.update({"discordId": discordId, "enabled": "TRUE", "channelId": channelId}).eq("discordId", discordId).execute()
+        else:
+            table.insert({"discordId": discordId, "enabled": "TRUE", "channelId": channelId}).execute()
+        print("enabled alert for user", discordId)
+        
+    except Exception as e:
+        print("addAlertUser: ", e)
+
+def removeAlertUser(discordId):
+    print("herererererer")
+    try:
+        table = supabase.table("calender_on")
+        row = table.select("*").eq("discordId", discordId).execute().data
+        if (row):
+            table.update({"enabled": "FALSE"}).eq("discordId", discordId).execute()
+            print("disabled alert for user", discordId)
+        else:
+            print(row)
+    except Exception as e:
+        print("removeAlertUser: ", e)
