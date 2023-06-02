@@ -120,8 +120,6 @@ def getAlertUser(discordId):
         print("getAllAlertUsers: ", e)
 
 def addAlertUser(discordId, channelId):
-    print("added alert userrrewrwrwer")
-
     try:
         table = supabase.table("calender_on")
         row = table.select("*").eq("discordId", discordId).execute().data
@@ -135,7 +133,6 @@ def addAlertUser(discordId, channelId):
         print("addAlertUser: ", e)
 
 def removeAlertUser(discordId):
-    print("herererererer")
     try:
         table = supabase.table("calender_on")
         row = table.select("*").eq("discordId", discordId).execute().data

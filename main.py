@@ -12,17 +12,9 @@ from schedule import AlertManager
 dotenv.load_dotenv()
 BOT_TOKEN = os.environ["BOT_TOKEN"]
 bot = lightbulb.BotApp(token=BOT_TOKEN)
-
-dotenv.load_dotenv()
 CLIENT_ID = os.environ["CLIENT_ID"]
 CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 REDIRECT_URI = os.environ["REDIRECT_URI"]
-
-# REDIRECT_URI= f'http://localhost:3000/'
-
-schedulers = {}
-renewSchedulers = {}
-jobs = {}
 
 alertManager = AlertManager(bot)
 
@@ -36,8 +28,7 @@ async def on_started(event: hikari.StartingEvent) -> None:
 @lightbulb.command('login', 'opens auth url', ephemeral=[True])
 @lightbulb.implements(lightbulb.SlashCommand)
 async def login(ctx):
-    discordId = (ctx.author.id)
-    discordId = encrypt(str(discordId))
+    discordId = encrypt(str(ctx.author.id))
     authUrl = f'https://anilist.co/api/v2/oauth/authorize?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&state={discordId}&response_type=code'
     await ctx.respond(hikari.Embed(title= "Link Discord with Anilist", url=authUrl))
 
@@ -85,7 +76,6 @@ async def list(ctx):
 @lightbulb.command('ping', 'test', ephemeral=[True])
 @lightbulb.implements(lightbulb.SlashCommand)
 async def ping(ctx):
-    print(schedulers, '\n', renewSchedulers)
     await ctx.respond("ping")
 
 # enables anime reminders for airing shows
@@ -99,7 +89,6 @@ async def alert(ctx):
         return
 
     channelId = ctx.channel_id
-    
     await alertManager.startAlert(discordId, channelId, ctx)
 
 # disables any ping notification

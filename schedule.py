@@ -118,5 +118,5 @@ class AlertManager:
 
     async def refreshSchedule(self):
         self.jobs = {}
-        self.initAlerts()
+        await self.initAlerts()
         
