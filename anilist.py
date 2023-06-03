@@ -98,7 +98,7 @@ def getShowtime(showId):
     response = __getQuery(variables, query4)
     if response.status_code == 200:
         data = json.loads(response.text)['data']
-        return data[0]
+        return data
     
 
 # gets some information about current watchlist
