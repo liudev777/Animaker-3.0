@@ -10,8 +10,7 @@ from schedule import AlertManager
 # from database import getAllShowtime
 
 dotenv.load_dotenv()
-BOT_TOKEN = os.environ["BOT_TOKEN"]
-bot = lightbulb.BotApp(token=BOT_TOKEN)
+bot = lightbulb.BotApp(token=os.environ["BOT_TOKEN"])
 CLIENT_ID = os.environ["CLIENT_ID"]
 CLIENT_SECRET = os.environ["CLIENT_SECRET"]
 REDIRECT_URI = os.environ["REDIRECT_URI"]
@@ -19,7 +18,7 @@ REDIRECT_URI = os.environ["REDIRECT_URI"]
 alertManager = AlertManager(bot)
 
 @bot.listen(hikari.StartingEvent)
-async def on_started(event: hikari.StartingEvent) -> None:
+async def onStarted(event: hikari.StartingEvent) -> None:
     print("Bot is now ready.")
     await alertManager.initAlerts()
 

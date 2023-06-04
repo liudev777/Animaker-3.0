@@ -94,7 +94,7 @@ class AlertManager:
         addAlertUser(discordId, channelId)
         await self.activateAlerts(discordId, channelId)
 
-    # 
+    # Called when show episode airs and need to update notification for next episode
     async def setNextSchedule(self, showId, discordId, channelId):
         anime = getShowtime(showId)
         media = anime['Page']['media']
